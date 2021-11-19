@@ -12,11 +12,11 @@ namespace Backend.Domain.Models
         public int Id { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(100)")]
+        [Column(TypeName = "varchar(50)")]
         public string Name { get; set; }
 
         [Required]
-        [Column(TypeName = "varchar(150)")]
+        [Column(TypeName = "varchar(100)")]
         public string Description { get; set; }
 
         public DateTime DateCreated { get; set; }
