@@ -13,6 +13,9 @@ namespace Backend.Persistence.Context
         public DbSet<Question> Questions { get; set; }
         public DbSet<Questionnaire> Questionnaires { get; set; }
         public DbSet<Answer> Answers { get; set; }
+        public DbSet<QuestionnaireAnswer> QuestionnaireAnswers { get; set; }
+        public DbSet<QuestionnaireAnswerDetail> QuestionnaireAnswerDetails { get; set; }
+
         public AplicationDbContext(DbContextOptions<AplicationDbContext> options): base(options)
         {
 
