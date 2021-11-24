@@ -18,9 +18,11 @@ namespace Backend.Controllers
     public class QuestionnaireAnswerController : ControllerBase
     {
         private readonly IQuestionnaireAnswerService _questionnaireAnswerService;
-        public QuestionnaireAnswerController(IQuestionnaireAnswerService questionnaireAnswerService)
+        private readonly IQuestionnaireService _questionnaireService;
+        public QuestionnaireAnswerController(IQuestionnaireAnswerService questionnaireAnswerService, IQuestionnaireService questionnaireService)
         {
             _questionnaireAnswerService = questionnaireAnswerService;
+            _questionnaireService = questionnaireService;
         }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] QuestionnaireAnswer questionnaireAnswer)
@@ -52,6 +54,48 @@ namespace Backend.Controllers
                 }
 
                 return Ok(listQuestionnaireAnswer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                int userID = JwtConfigurator.GetTokenUserID(identity);
+
+                var questionAnswer = await _questionnaireAnswerService.FindQuestionnaireAnswer(id, userID);
+                if(questionAnswer == null)
+                {
+                    return BadRequest(new { message = "Error al buscar la respuesta al cuestionario" });
+                }
+
+                await _questionnaireAnswerService.DeleteQuestionnaireAnswer(questionAnswer);
+                return Ok(new { message = "La respuesta al cuestionario fue eliminada con exito" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Route("GetQuestionnaireByAnswerId/{answerId}")]
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetQuestionnaireByAnswerId(int answerId)
+        {
+            try
+            {
+                int questionnaireId = await _questionnaireAnswerService.GetQuestionnaireIDByAnswerID(answerId);
+                var questionnaire = await _questionnaireService.GetQuestionnaire(questionnaireId);
+                var answersList = await _questionnaireAnswerService.GetAnswerList(answerId);
+                return Ok(new { questionnaire = questionnaire, answers = answersList });
             }
             catch (Exception ex)
             {

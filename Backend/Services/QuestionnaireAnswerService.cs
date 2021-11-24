@@ -16,6 +16,16 @@ namespace Backend.Services
             _questionnaireAnswerRepository = questionnaireAnswerRepository;
         }
 
+        public Task DeleteQuestionnaireAnswer(QuestionnaireAnswer questionnaireAnswer)
+        {
+            return _questionnaireAnswerRepository.DeleteQuestionnaireAnswer(questionnaireAnswer);
+        }
+
+        public async Task<QuestionnaireAnswer> FindQuestionnaireAnswer(int questionnanireAnswerId, int userId)
+        {
+            return await _questionnaireAnswerRepository.FindQuestionnaireAnswer(questionnanireAnswerId, userId);
+        }
+
         public async Task<List<QuestionnaireAnswer>> ListQuestionnaireAnswers(int questionnaireId, int userId)
         {
             return await _questionnaireAnswerRepository.ListQuestionnaireAnswers(questionnaireId, userId);
@@ -26,6 +36,14 @@ namespace Backend.Services
             await _questionnaireAnswerRepository.SaveQuestionnaireAnswer(questionnaireAnswer);
         }
 
+        public async Task<int> GetQuestionnaireIDByAnswerID(int questionnanireAnswerId)
+        {
+            return await _questionnaireAnswerRepository.GetQuestionnaireIDByAnswerID(questionnanireAnswerId);
+        }
 
+        public async Task<List<QuestionnaireAnswerDetail>> GetAnswerList(int questionnanireAnswerId)
+        {
+            return await _questionnaireAnswerRepository.GetAnswerList(questionnanireAnswerId);
+        }
     }
 }

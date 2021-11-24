@@ -34,5 +34,38 @@ namespace Backend.Persistence.Repositories
             return listQuestionnaireAnswer;
         }
 
+        public async Task<QuestionnaireAnswer> FindQuestionnaireAnswer(int questionnanireAnswerId, int userId)
+        {
+            var questionnaireAnswer = await _context.QuestionnaireAnswers
+                .Where(x => x.Id == questionnanireAnswerId && 
+                       x.Questionnaire.UserID == userId &&
+                       x.Active == 1).FirstOrDefaultAsync();
+            return questionnaireAnswer;
+        }
+
+        public async Task DeleteQuestionnaireAnswer(QuestionnaireAnswer questionnaireAnswer)
+        {
+            questionnaireAnswer.Active = 0;
+            _context.Entry(questionnaireAnswer).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetQuestionnaireIDByAnswerID(int questionnanireAnswerId)
+        {
+            var questionnaireid = await _context.QuestionnaireAnswers.Where(x => x.Id == questionnanireAnswerId
+                                                                            && x.Active == 1).FirstOrDefaultAsync();
+            return questionnaireid.QuestionnaireId;
+        }
+
+        public async Task<List<QuestionnaireAnswerDetail>> GetAnswerList(int questionnanireAnswerId)
+        {
+            var answerList = await _context.QuestionnaireAnswerDetails
+                .Where(x => x.QuestionnaireAnswerId == questionnanireAnswerId)
+                .Select(x => new QuestionnaireAnswerDetail
+                {
+                    AnswerId = x.AnswerId
+                }).ToListAsync();
+            return answerList;
+        }
     }
 }
